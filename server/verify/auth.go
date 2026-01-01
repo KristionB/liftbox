@@ -1,10 +1,11 @@
 package verify
 
 import (
+	"crypto/hmac"
 	"crypto/ed25519"
 	"encoding/hex"
 
-	"secure-file-sync/client/crypto"
+	"github.com/KristionB/secure-file-sync/client/crypto"
 )
 
 // VerifySignature verifies the signature of an upload request
@@ -35,7 +36,8 @@ func VerifyHMAC(key []byte, data []byte, hmacHex string) bool {
 	if err != nil {
 		return false
 	}
-	return crypto.VerifyHMAC(key, data, expectedHMAC)
+	computedHMAC := crypto.ComputeHMAC(data, key)
+	return hmac.Equal(expectedHMAC, computedHMAC)
 }
 
 // GetPublicKeyFromHex is a helper to get public key from hex string

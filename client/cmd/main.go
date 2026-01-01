@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"secure-file-sync/client/crypto"
-	"secure-file-sync/client/sync"
+	"github.com/KristionB/secure-file-sync/client/crypto"
+	"github.com/KristionB/secure-file-sync/client/sync"
 )
 
 func main() {

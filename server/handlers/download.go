@@ -1,40 +1,32 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"secure-file-sync/server/storage"
+	"github.com/gin-gonic/gin"
+	"github.com/KristionB/secure-file-sync/server/storage"
 )
 
-// DownloadHandler handles file download requests
-func DownloadHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	fileName := r.URL.Query().Get("file")
-	if fileName == "" {
-		http.Error(w, "File name is required", http.StatusBadRequest)
+// Download handles file download requests
+func Download(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File ID is required"})
 		return
 	}
 
 	// Retrieve file from storage
-	fileData, hmac, publicKey, err := storage.RetrieveFile(fileName)
+	fileData, hmac, publicKey, err := storage.RetrieveFile(id)
 	if err != nil {
-		http.Error(w, "File not found", http.StatusNotFound)
+		c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
 		return
 	}
 
 	// Return file data with metadata
-	response := map[string]interface{}{
+	c.JSON(http.StatusOK, gin.H{
 		"file_data":  fileData,
 		"hmac":       hmac,
 		"public_key": publicKey,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	})
 }
 
