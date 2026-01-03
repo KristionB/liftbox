@@ -1,4 +1,4 @@
-# Secure File Sync
+# Liftbox
 
 A production-ready, secure file synchronization system with end-to-end encryption, stateless architecture, and zero-trust server design.
 
